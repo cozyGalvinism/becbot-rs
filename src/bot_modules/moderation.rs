@@ -1,12 +1,9 @@
-use std::{fs::File, io::Write, sync::Arc};
-
 use chrono::Utc;
 use image::Rgba;
 use leptess::LepTess;
 use poise::serenity_prelude::{self as serenity, Mentionable};
 
 use rustrict::CensorStr;
-use tokio::io::AsyncWriteExt;
 
 use crate::{Data, Error};
 
@@ -14,7 +11,7 @@ async fn scan_image(
     ctx: &serenity::Context,
     attachment: &serenity::Attachment,
     message: &serenity::Message,
-    channel: &serenity::ChannelId,
+    _: &serenity::ChannelId,
     log_channel: &serenity::ChannelId,
 ) -> serenity::Result<()> {
     let tessdata_dir = std::env::var("TESSDATA").expect("TESSDATA environment variable not set");
@@ -107,7 +104,7 @@ async fn scan_image(
 
 pub async fn handle_message(
     ctx: &serenity::Context,
-    framework: &poise::Framework<Data, Error>,
+    _: &poise::Framework<Data, Error>,
     message: &serenity::Message,
 ) -> serenity::Result<()> {
     let log_channel_id: u64 = std::env::var("LOG_CHANNEL_ID").unwrap().parse().unwrap();

@@ -1,7 +1,6 @@
-use chrono::{NaiveDateTime, Utc};
+use chrono::Utc;
 use diesel::prelude::*;
 use diesel::SqliteConnection;
-use poise::send_reply;
 use poise::serenity_prelude as serenity;
 
 use crate::diesel::RunQueryDsl;

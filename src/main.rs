@@ -9,11 +9,11 @@ mod bot_modules;
 mod models;
 mod schema;
 
-use std::{env, pin::Pin};
+use std::env;
 
 use diesel::{r2d2::ConnectionManager, SqliteConnection, connection::SimpleConnection};
 use dotenv::dotenv;
-use poise::{serenity_prelude as serenity, ApplicationContext, PrefixFrameworkOptions};
+use poise::{serenity_prelude as serenity, PrefixFrameworkOptions};
 
 pub struct UserData {
     pub pool: r2d2::Pool<ConnectionManager<SqliteConnection>>,
@@ -24,8 +24,6 @@ type Error = Box<dyn std::error::Error + Send + Sync>;
 type Context<'a> = poise::Context<'a, UserData, Error>;
 
 async fn register_all_commands(guild_id: u64, ctx: &serenity::Context, framework: &poise::Framework<Data, Error>) -> Result<usize, serenity::Error> {
-    let current_commands = ctx.http.get_guild_application_commands(guild_id).await?;
-    
     let mut commands_builder = serenity::CreateApplicationCommands::default();
     let commands = &framework.options().commands;
     for command in commands {
@@ -48,7 +46,7 @@ async fn on_event(
     _user_data: &Data,
 ) -> Result<(), Error> {
     match event {
-        poise::Event::Ready { data_about_bot: d } => {
+        poise::Event::Ready { data_about_bot: _ } => {
             info!("Becbot is starting up, caching guilds...");
         },
         poise::Event::CacheReady { guilds} => {

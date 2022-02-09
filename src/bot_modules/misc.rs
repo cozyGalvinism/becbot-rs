@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use chrono::Utc;
 use poise::{command, serenity_prelude::{self as serenity, Mentionable}};
 use rand::Rng;
