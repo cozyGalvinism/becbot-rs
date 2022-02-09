@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use chrono::Utc;
-use poise::{command, serenity_prelude as serenity};
+use poise::{command, serenity_prelude::{self as serenity, Mentionable}};
 use rand::Rng;
 
 use crate::{Context, Error};
@@ -288,17 +288,21 @@ pub async fn familyfriendly(ctx: Context<'_>) -> Result<(), Error> {
     Ok(())
 }
 
-/// Hug someone
-#[command(slash_command, context_menu_command = "Give this person a hug")]
+/// Hug everything you want!
+#[command(slash_command)]
 pub async fn hug(
     ctx: Context<'_>,
-    #[description = "The person to hug"] user: serenity::User,
+    #[description = "What to hug"] to_hug: String,
 ) -> Result<(), Error> {
-    if let Some(nick) = user.nick_in(ctx.discord(), ctx.guild().unwrap()).await {
-        ctx.say(format!("*hugs {}*", nick)).await?;
-    } else {
-        ctx.say(format!("*hugs {}*", user.name)).await?;
-    }
+    ctx.say(format!("*hugs {}*", to_hug)).await?;
+
+    Ok(())
+}
+
+#[command(context_menu_command = "Give this person a hug")]
+pub async fn hug_someone(
+    ctx: Context<'_>, user: serenity::User) -> Result<(), Error> {
+    ctx.say(format!("*hugs {}*", user.mention())).await?;
 
     Ok(())
 }

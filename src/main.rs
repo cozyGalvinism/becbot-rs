@@ -131,6 +131,7 @@ async fn main() {
                 bot_modules::misc::happytime(),
                 bot_modules::misc::hydrate(),
                 bot_modules::misc::hug(),
+                bot_modules::misc::hug_someone(),
                 bot_modules::misc::familyfriendly(),
                 bot_modules::misc::hello(),
                 bot_modules::misc::ping(),
