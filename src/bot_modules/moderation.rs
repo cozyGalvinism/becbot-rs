@@ -15,9 +15,12 @@ async fn scan_image(
     attachment: &serenity::Attachment,
     message: &serenity::Message,
     channel: &serenity::ChannelId,
+    log_channel: &serenity::ChannelId,
 ) -> serenity::Result<()> {
+    let tessdata_dir = std::env::var("TESSDATA").expect("TESSDATA environment variable not set");
+
     let bytes = attachment.download().await?;
-    let leptess = LepTess::new(Some("./tessdata"), "eng");
+    let leptess = LepTess::new(Some(tessdata_dir.as_str()), "eng");
     if leptess.is_err() {
         return Err(serenity::Error::Other("Failed to initialize leptess"));
     }
@@ -57,7 +60,7 @@ async fn scan_image(
                 let red = Rgba([255, 0, 0, 255]);
                 img_buf = imageproc::drawing::draw_hollow_rect(
                     &img_buf,
-                    imageproc::rect::Rect::at(x - 5, y - 7).of_size(w + 3, h + 3),
+                    imageproc::rect::Rect::at(x - 3, y - 3).of_size(w + 6, h + 6),
                     red,
                 );
                 found_words.push(text);
@@ -70,15 +73,19 @@ async fn scan_image(
     }
     let found_words = found_words.join(", ");
     let found_in = message.channel(ctx).await.unwrap().guild().unwrap();
-    channel
+    log_channel
         .send_message(ctx, |cm| {
             cm.embed(|e| {
                 e.title("**Possible blacklisted words in image detected!**")
                     .color(0xFF0000)
                     .timestamp(Utc::now())
                     .author(|a| {
-                        a.name(ctx.cache.current_user().name)
-                            .icon_url(ctx.cache.current_user().avatar_url().unwrap())
+                        let embed_author = a.name(ctx.cache.current_user().name);
+                        if ctx.cache.current_user().avatar_url().is_some() {
+                            embed_author.icon_url(message.author.avatar_url().unwrap())
+                        } else {
+                            embed_author
+                        }
                     })
                     .field("Author", message.author.mention(), false)
                     .field("Channel", message.channel_id.mention(), false)
@@ -88,11 +95,12 @@ async fn scan_image(
             })
         })
         .await?;
-    let mut temp_file: tokio::fs::File = tempfile::tempfile().unwrap().into();
-    temp_file.write_all(&img_buf).await.unwrap();
-    channel
+    img_buf.save("temp.png").unwrap();
+    let temp_file = tokio::fs::File::open("temp.png").await?;
+    log_channel
         .send_files(ctx, vec![(&temp_file, "processed_image.png")], |m| m)
         .await?;
+    tokio::fs::remove_file("temp.png").await?;
 
     Ok(())
 }
@@ -143,6 +151,7 @@ pub async fn handle_message(
                 &attachment_clone,
                 &message_clone,
                 &channel_clone,
+                &log_channel,
             )
             .await;
         });
