@@ -23,7 +23,7 @@ pub async fn handle_message(ctx: &serenity::Context, framework: &poise::Framewor
     }
 
     // F
-    if message.content.to_lowercase().starts_with('f')  {
+    if message.content.to_lowercase().starts_with("f ") || message.content.to_lowercase() == "f"  {
         message.reply_ping(ctx, ":regional_indicator_f:").await?;
         return Ok(());
     }
