@@ -89,7 +89,6 @@ pub async fn add_quote(
 /// Display a quote
 #[poise::command(
     slash_command,
-    required_permissions = "MANAGE_MESSAGES",
     guild_cooldown = 5
 )]
 pub async fn quote(
