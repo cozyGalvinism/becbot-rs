@@ -145,7 +145,6 @@ pub async fn catenativedoomsdaydicecascader(ctx: Context<'_>) -> Result<(), Erro
     // 2. You then roll that many dice, with each roll multiplying the number of sides of the next roll.
     // 3. The final roll is the amount of damage.
     let mci = serenity::CollectComponentInteraction::new(ctx.discord())
-        .author_id(ctx.author().id)
         .channel_id(ctx.channel_id())
         .timeout(std::time::Duration::from_secs(60))
         .filter(move |mci| mci.data.custom_id == id.to_string())
