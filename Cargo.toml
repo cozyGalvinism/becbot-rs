@@ -1,0 +1,26 @@
+[package]
+name = "becbotreloaded"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+Inflector = "0.11.4"
+chrono = "0.4.19"
+chrono-tz = "0.6.1"
+diesel = { version = "1.4.8", features = ["sqlite", "chrono", "r2d2"] }
+diesel_migrations = "1.4.0"
+dotenv = "0.15.0"
+image = "0.23.6"
+imageproc = "0.22.0"
+lazy_static = "1.4.0"
+leptess = "0.13.2"
+log = "0.4.14"
+poise = { git = "https://github.com/kangalioo/poise", rev = "a28b019", features = ["collector"] }
+r2d2 = "0.8.9"
+rand = "0.8.4"
+rustrict = "0.3.13"
+simple_logger = "2.1.0"
+tempfile = "3.3.0"
+tokio = { version = "1.16.1", features = ["full"] }
