@@ -62,6 +62,7 @@ fn get_quote(conn: &SqliteConnection, to_get: Option<i32>) -> Option<Quote> {
 /// Add a quote
 #[poise::command(
     slash_command,
+    prefix_command,
     context_menu_command = "Add quote",
     required_permissions = "MANAGE_MESSAGES",
     rename = "addquote"
@@ -88,6 +89,7 @@ pub async fn add_quote(
 /// Display a quote
 #[poise::command(
     slash_command,
+    prefix_command,
     guild_cooldown = 5
 )]
 pub async fn quote(
@@ -117,6 +119,7 @@ pub async fn quote(
 #[poise::command(
     slash_command,
     required_permissions = "MANAGE_MESSAGES",
+    prefix_command,
     rename = "removequote"
 )]
 pub async fn remove_quote(

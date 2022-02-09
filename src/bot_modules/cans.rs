@@ -24,7 +24,7 @@ fn add_can(conn: &SqliteConnection, author: &serenity::User) -> i64 {
 }
 
 /// Add a can on lumiDiscord
-#[command(slash_command, guild_cooldown = 35)]
+#[command(slash_command, guild_cooldown = 35, prefix_command, aliases("addbear", "asscan"))]
 pub async fn addcan(ctx: Context<'_>) -> Result<(), Error> {
     let author = ctx.author();
     let data = ctx.data();

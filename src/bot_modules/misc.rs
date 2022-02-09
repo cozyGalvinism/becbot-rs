@@ -22,7 +22,7 @@ lazy_static! {
 }
 
 /// Displays the current time in EST, which is where Happygate lives.
-#[command(slash_command)]
+#[command(slash_command, prefix_command)]
 pub async fn happytime(ctx: Context<'_>) -> Result<(), Error> {
     // us/eastern time
     let est_now = Utc::now().with_timezone(&chrono_tz::US::Eastern);
@@ -36,7 +36,7 @@ pub async fn happytime(ctx: Context<'_>) -> Result<(), Error> {
 }
 
 /// Displays the current time in CST, which is where Lumi lives.
-#[command(slash_command)]
+#[command(slash_command, prefix_command)]
 pub async fn lumitime(ctx: Context<'_>) -> Result<(), Error> {
     // US/Central
     let cst_now = Utc::now().with_timezone(&chrono_tz::US::Central);
@@ -50,7 +50,7 @@ pub async fn lumitime(ctx: Context<'_>) -> Result<(), Error> {
 }
 
 /// Displays the current time in CET, which is where Ven lives.
-#[command(slash_command)]
+#[command(slash_command, prefix_command)]
 pub async fn ventime(ctx: Context<'_>) -> Result<(), Error> {
     // Europe/Paris
     let cet_now = Utc::now().with_timezone(&chrono_tz::Europe::Paris);
@@ -64,7 +64,7 @@ pub async fn ventime(ctx: Context<'_>) -> Result<(), Error> {
 }
 
 /// Displays the current time in AWST, which is where Teebz lives.
-#[command(slash_command)]
+#[command(slash_command, prefix_command)]
 pub async fn teebztime(ctx: Context<'_>) -> Result<(), Error> {
     // Australia/Perth
     let awst_now = Utc::now().with_timezone(&chrono_tz::Australia::Perth);
@@ -117,7 +117,7 @@ fn build_base_embed<'a>(
 }
 
 /// Activate the doomsday device!
-#[command(slash_command, aliases("cddc"))]
+#[command(slash_command, prefix_command, aliases("cddc"))]
 pub async fn catenativedoomsdaydicecascader(ctx: Context<'_>) -> Result<(), Error> {
     let id = ctx.id();
     let reply = ctx.send(|cr| cr
@@ -271,7 +271,7 @@ pub async fn catenativedoomsdaydicecascader(ctx: Context<'_>) -> Result<(), Erro
 }
 
 /// hydration check
-#[command(slash_command)]
+#[command(slash_command, prefix_command)]
 pub async fn hydrate(ctx: Context<'_>) -> Result<(), Error> {
     ctx.say("don't forget to drink water").await?;
 
@@ -279,7 +279,7 @@ pub async fn hydrate(ctx: Context<'_>) -> Result<(), Error> {
 }
 
 /// That's not very family friendly of you.
-#[command(slash_command)]
+#[command(slash_command, prefix_command)]
 pub async fn familyfriendly(ctx: Context<'_>) -> Result<(), Error> {
     ctx.say("https://galvinism.ink/nff.jpg").await?;
 
@@ -287,7 +287,7 @@ pub async fn familyfriendly(ctx: Context<'_>) -> Result<(), Error> {
 }
 
 /// Hug everything you want!
-#[command(slash_command)]
+#[command(slash_command, prefix_command)]
 pub async fn hug(
     ctx: Context<'_>,
     #[description = "What to hug"] to_hug: String,
@@ -306,7 +306,7 @@ pub async fn hug_someone(
 }
 
 /// Say hello!
-#[command(slash_command)]
+#[command(slash_command, prefix_command)]
 pub async fn hello(ctx: Context<'_>) -> Result<(), Error> {
     ctx.say("Hello!").await?;
 
@@ -314,7 +314,7 @@ pub async fn hello(ctx: Context<'_>) -> Result<(), Error> {
 }
 
 /// Ping pong
-#[command(slash_command)]
+#[command(slash_command, prefix_command)]
 pub async fn ping(ctx: Context<'_>) -> Result<(), Error> {
     ctx.say("Pong!").await?;
 
@@ -322,7 +322,7 @@ pub async fn ping(ctx: Context<'_>) -> Result<(), Error> {
 }
 
 /// you know what this does
-#[command(slash_command)]
+#[command(slash_command, prefix_command)]
 pub async fn flipcoin(ctx: Context<'_>) -> Result<(), Error> {
     let result = rand::thread_rng().gen_range(0..FLIPCOIN_RESPONSES.len());
     ctx.say(FLIPCOIN_RESPONSES[result]).await?;
@@ -339,7 +339,7 @@ pub async fn coinflip(ctx: Context<'_>) -> Result<(), Error> {
 }
 
 /// I need healing
-#[command(slash_command)]
+#[command(slash_command, prefix_command)]
 pub async fn help(ctx: Context<'_>) -> Result<(), Error> {
     ctx.say("https://www.youtube.com/watch?v=yD2FSwTy2lw").await?;
 
@@ -347,7 +347,7 @@ pub async fn help(ctx: Context<'_>) -> Result<(), Error> {
 }
 
 /// Post the link to the ban appeal form
-#[command(slash_command)]
+#[command(slash_command, prefix_command, aliases("bananapeel"))]
 pub async fn banappeal(ctx: Context<'_>) -> Result<(), Error> {
     ctx.say("https://docs.google.com/forms/d/e/1FAIpQLScfna7CI_XMEX-szOBC7h_E1XJDSNCjYEYBId69QwuZnITOCw/viewform").await?;
 
@@ -355,7 +355,7 @@ pub async fn banappeal(ctx: Context<'_>) -> Result<(), Error> {
 }
 
 /// no
-#[command(slash_command)]
+#[command(slash_command, prefix_command)]
 pub async fn addjohn(ctx: Context<'_>) -> Result<(), Error> {
     ctx.say("no").await?;
 
@@ -363,7 +363,7 @@ pub async fn addjohn(ctx: Context<'_>) -> Result<(), Error> {
 }
 
 /// do u kno da wae
-#[command(slash_command)]
+#[command(slash_command, prefix_command)]
 pub async fn ohno(ctx: Context<'_>) -> Result<(), Error> {
     ctx.say("https://media.discordapp.net/attachments/431932541612589077/544587477508161547/Ilikestevenuniversealotbutwhydoi_ad1871fcdc058915b00d12d5968a0d0a.png").await?;
 
@@ -371,7 +371,7 @@ pub async fn ohno(ctx: Context<'_>) -> Result<(), Error> {
 }
 
 /// Post the link to the radio
-#[command(slash_command)]
+#[command(slash_command, prefix_command)]
 pub async fn radio(ctx: Context<'_>) -> Result<(), Error> {
     ctx.say("https://www.youtube.com/luminantAegis/live").await?;
 
@@ -379,7 +379,7 @@ pub async fn radio(ctx: Context<'_>) -> Result<(), Error> {
 }
 
 /// No roleplaying in my server
-#[command(slash_command)]
+#[command(slash_command, prefix_command)]
 pub async fn rp(ctx: Context<'_>) -> Result<(), Error> {
     ctx.say("We all know role playing isn't allowed here, so you must be looking for this instead! https://mspfa.com/?s=25171&p=1").await?;
 
@@ -387,7 +387,7 @@ pub async fn rp(ctx: Context<'_>) -> Result<(), Error> {
 }
 
 /// Send someone off
-#[command(slash_command)]
+#[command(slash_command, prefix_command)]
 pub async fn copper(ctx: Context<'_>) -> Result<(), Error> {
     ctx.say(r#"Copper is "Cu" on the periodic table. When read it sounds like "see you", a shortened version of the phrase "See you later", which is commonly used as a sendoff to someone."#).await?;
 
