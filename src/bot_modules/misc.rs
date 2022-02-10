@@ -290,7 +290,7 @@ pub async fn familyfriendly(ctx: Context<'_>) -> Result<(), Error> {
 #[command(slash_command, prefix_command)]
 pub async fn hug(
     ctx: Context<'_>,
-    #[description = "What to hug"] to_hug: String,
+    #[description = "What to hug"] #[rest] to_hug: String,
 ) -> Result<(), Error> {
     ctx.say(format!("*hugs {}*", to_hug)).await?;
 

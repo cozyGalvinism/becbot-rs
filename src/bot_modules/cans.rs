@@ -23,9 +23,13 @@ fn add_can(conn: &SqliteConnection, author: &serenity::User) -> i64 {
     cans::table.count().get_result(conn).unwrap()
 }
 
+#[allow(unused_variables)]
 /// Add a can on lumiDiscord
 #[command(slash_command, guild_cooldown = 35, prefix_command, aliases("addbear", "asscan"))]
-pub async fn addcan(ctx: Context<'_>) -> Result<(), Error> {
+pub async fn addcan(
+    ctx: Context<'_>, 
+    #[description = "...of what?"] #[rest] of_something: Option<String>
+) -> Result<(), Error> {
     let author = ctx.author();
     let data = ctx.data();
     let conn = data.pool.get().expect("Couldn't get connection from pool");
