@@ -143,6 +143,8 @@ async fn main() {
                 bot_modules::misc::radio(),
                 bot_modules::misc::rp(),
                 bot_modules::misc::copper(),
+                bot_modules::colors::color(),
+                bot_modules::colors::clearcolor(),
             ],
             prefix_options: PrefixFrameworkOptions {
                 prefix: Some("!".into()),
