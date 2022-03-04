@@ -56,7 +56,7 @@ async fn on_event(
                 info!("Registered {} commands for guild {}", registered_amount, g.0);
             }
             info!("Commands registered! Have fun!");
-            ctx.set_activity(serenity::Activity::playing("Becbot Reloaded v1.0.0")).await;
+            ctx.set_activity(serenity::Activity::playing(format!("Becbot Reloaded v{}", env!("CARGO_PKG_VERSION")))).await;
         },
         poise::Event::Message {new_message} => {
             let _ = bot_modules::autoresponder::handle_message(ctx, framework, new_message).await;

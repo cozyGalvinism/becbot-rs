@@ -107,7 +107,9 @@ pub async fn handle_message(
     _: &poise::Framework<Data, Error>,
     message: &serenity::Message,
 ) -> serenity::Result<()> {
+    let attachment_scan: bool = std::env::var("SCAN_ATTACHMENTS").is_ok();
     let log_channel_id: u64 = std::env::var("LOG_CHANNEL_ID").unwrap().parse().unwrap();
+
     if message.channel_id.0 == log_channel_id {
         return Ok(());
     }
@@ -137,21 +139,23 @@ pub async fn handle_message(
             .await?;
     }
 
-    for attachment in &message.attachments {
-        let attachment_clone = attachment.clone();
-        let message_clone = message.clone();
-        let channel_clone = message.channel_id;
-        let context_clone = ctx.clone();
-        tokio::spawn(async move {
-            let _ = scan_image(
-                &context_clone,
-                &attachment_clone,
-                &message_clone,
-                &channel_clone,
-                &log_channel,
-            )
-            .await;
-        });
+    if attachment_scan {
+        for attachment in &message.attachments {
+            let attachment_clone = attachment.clone();
+            let message_clone = message.clone();
+            let channel_clone = message.channel_id;
+            let context_clone = ctx.clone();
+            tokio::spawn(async move {
+                let _ = scan_image(
+                    &context_clone,
+                    &attachment_clone,
+                    &message_clone,
+                    &channel_clone,
+                    &log_channel,
+                )
+                .await;
+            });
+        }
     }
 
     Ok(())
