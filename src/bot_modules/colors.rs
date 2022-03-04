@@ -1,6 +1,11 @@
 use poise::{command, serenity_prelude as serenity};
+use regex::Regex;
 
 use crate::{Context, Error};
+
+lazy_static! {
+    static ref COLOR_REGEX: Regex = Regex::new(r"^#[a-fA-F0-9]{6}$").unwrap();
+}
 
 /// Sets your color
 #[command(slash_command, prefix_command)]
@@ -17,6 +22,12 @@ pub async fn color(
     let author = ctx.author();
     let guild = ctx.guild().unwrap();
     let mut member = guild.member(&ctx.discord(), author.id).await.unwrap();
+
+    for r in member.roles(&ctx.discord()).unwrap() {
+        if COLOR_REGEX.is_match(&r.name) {
+            guild.delete_role(&ctx.discord(), r.id).await?;
+        }
+    }
 
     let mut user_role = guild.role_by_name(&author.id.0.to_string());
 
