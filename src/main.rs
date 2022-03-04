@@ -83,6 +83,8 @@ async fn main() {
         .with_module_level("serenity", log::LevelFilter::Off)
         .with_module_level("tracing", log::LevelFilter::Off)
         .init().ok();
+    
+    info!("Booting Becbot v{}", env!("CARGO_PKG_VERSION"));
 
     let token = env::var("DISCORD_TOKEN").expect("Expected a token in the environment");
     let database_url =
