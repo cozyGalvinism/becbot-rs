@@ -1,6 +1,7 @@
+use break_eternity::Decimal;
 use chrono::Utc;
 use poise::{command, serenity_prelude::{self as serenity, Mentionable}};
-use rand::Rng;
+use rand::{Rng, prelude::SmallRng, SeedableRng};
 
 use crate::{Context, Error};
 
@@ -77,7 +78,7 @@ pub async fn teebztime(ctx: Context<'_>) -> Result<(), Error> {
     Ok(())
 }
 
-fn number_to_string(number: i32) -> String {
+fn number_to_string(number: u64) -> String {
     match number {
         1 => "one".to_string(),
         2 => "two".to_string(),
@@ -92,7 +93,7 @@ fn number_to_string(number: i32) -> String {
 fn build_base_embed<'a>(
     ce: &'a mut serenity::CreateEmbed,
     orig: Option<&serenity::Embed>,
-    prime_bubble_roll: i32,
+    prime_bubble_roll: u64,
 ) -> &'a mut serenity::CreateEmbed {
     let new_ce = ce
             .title("CATENATIVE DOOMSDAY DICE CASCADER")
@@ -114,6 +115,18 @@ fn build_base_embed<'a>(
     } else {
         new_ce
     }
+}
+
+fn roll_decimal(min: Decimal, max: Decimal) -> Decimal {
+    let mut rng = rand::thread_rng();
+    let layer_range = min.layer..=max.layer;
+    let mag_range = min.mag..=max.mag;
+    let sign = 1_i8;
+
+    let layer = rng.gen_range(layer_range);
+    let mag = rng.gen_range(mag_range).floor();
+
+    Decimal::from_components(sign, layer, mag)
 }
 
 /// Activate the doomsday device!
@@ -165,8 +178,8 @@ pub async fn catenativedoomsdaydicecascader(ctx: Context<'_>) -> Result<(), Erro
 
     let mci = mci.unwrap();
     let mut msg = mci.message.clone();
-    let mut dice_sides = 6;
-    let prime_bubble_roll = rand::thread_rng().gen_range(1..=6);
+    let mut dice_sides: Decimal = 6.into();
+    let prime_bubble_roll: u64 = rand::thread_rng().gen_range(1..=6);
 
     let mut temp_embeds = msg.embeds.clone();
     let mut orig = temp_embeds.get(0);
@@ -184,7 +197,7 @@ pub async fn catenativedoomsdaydicecascader(ctx: Context<'_>) -> Result<(), Erro
 
     tokio::time::sleep(std::time::Duration::from_secs(2)).await;
     for i in 0..prime_bubble_roll - 1 {
-        let cascader_result = rand::thread_rng().gen_range(1..=dice_sides);
+        let cascader_result = roll_decimal(1.into(), dice_sides);
         let old_sides = dice_sides;
         dice_sides *= cascader_result;
         let number = i + 1;
@@ -236,7 +249,7 @@ pub async fn catenativedoomsdaydicecascader(ctx: Context<'_>) -> Result<(), Erro
         orig = temp_embeds.get(0);
         tokio::time::sleep(std::time::Duration::from_secs(2)).await;
     }
-    let result = rand::thread_rng().gen_range(1..=dice_sides);
+    let result = roll_decimal(1.into(), dice_sides);
     msg.edit(ctx.discord(), |m| {
         m.embed(|ce| {
             build_base_embed(ce, orig, prime_bubble_roll).field(
@@ -263,7 +276,7 @@ pub async fn catenativedoomsdaydicecascader(ctx: Context<'_>) -> Result<(), Erro
             .image("https://galvinism.ink/cddc_inactive.png")
         })
     }).await?;
-    if result == 1 {
+    if result == 1.into() {
         ctx.say("https://www.homestuck.com/images/extras/ps000020_9.gif").await?;
     }
 

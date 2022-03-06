@@ -1,4 +1,4 @@
-use poise::{command, serenity_prelude as serenity};
+use poise::command;
 use regex::Regex;
 
 use crate::{Context, Error};
@@ -13,8 +13,8 @@ pub async fn color(
     ctx: Context<'_>,
     #[description = "The color to use"] #[rest] color: String,
 ) -> Result<(), Error> {
-    let color_u64 = if color.starts_with("#") {
-        u64::from_str_radix(&color[1..], 16).unwrap()
+    let color_u64 = if let Some(stripped) = color.strip_prefix('#') {
+        u64::from_str_radix(stripped, 16).unwrap()
     } else {
         u64::from_str_radix(&color, 16).unwrap()
     };

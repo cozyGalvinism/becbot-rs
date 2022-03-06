@@ -162,3 +162,26 @@ async fn main() {
 
     framework.start().await.unwrap();
 }
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn test_highest_cnnc() {
+        let mut dice_sides: u64 = 6;
+
+        // first roll
+        dice_sides = dice_sides * dice_sides;
+        // second roll
+        dice_sides = dice_sides * dice_sides;
+        // third roll
+        dice_sides = dice_sides * dice_sides;
+        // fourth roll
+        dice_sides = dice_sides * dice_sides;
+        // fifth roll
+        dice_sides = dice_sides * dice_sides;
+        // sixth roll
+        dice_sides = dice_sides * dice_sides;
+
+        println!("{}", dice_sides);
+    }
+}
