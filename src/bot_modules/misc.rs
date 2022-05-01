@@ -407,6 +407,7 @@ pub async fn copper(ctx: Context<'_>) -> Result<(), Error> {
     Ok(())
 }
 
+/// The wonderful act of... WORLDBUILDING
 #[command(slash_command, prefix_command)]
 pub async fn worldbuilding(ctx: Context<'_>) -> Result<(), Error> {
     ctx.say("https://www.homestuck.com/images/storyfiles/hs2/05958_2.gif").await?;
