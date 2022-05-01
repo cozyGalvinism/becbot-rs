@@ -143,6 +143,7 @@ async fn main() {
                 bot_modules::misc::radio(),
                 bot_modules::misc::rp(),
                 bot_modules::misc::copper(),
+                bot_modules::misc::worldbuilding(),
                 bot_modules::colors::color(),
                 bot_modules::colors::clearcolor(),
             ],
