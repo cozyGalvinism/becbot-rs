@@ -165,9 +165,11 @@ async fn main() {
 
 #[cfg(test)]
 mod tests {
+    use break_eternity::Decimal;
+
     #[test]
     fn test_highest_cnnc() {
-        let mut dice_sides: u64 = 6;
+        let mut dice_sides: Decimal = 6.into();
 
         // first roll
         dice_sides = dice_sides * dice_sides;
