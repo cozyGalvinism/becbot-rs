@@ -66,7 +66,7 @@ async fn on_event(
                 warn!("LOG_CHANNEL_ID not set! Moderation module disabled...");
                 return Ok(());
             }
-            let _ = bot_modules::moderation::handle_message(ctx, framework, new_message).await;
+            // let _ = bot_modules::moderation::handle_message(ctx, framework, new_message).await;
         },
         _ => (),
     }
