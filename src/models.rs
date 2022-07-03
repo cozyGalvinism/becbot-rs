@@ -1,4 +1,4 @@
-use super::schema::{cans, quotes};
+use super::schema::{cans, quotes, suggestions};
 use chrono::NaiveDateTime;
 use diesel::Insertable;
 
@@ -34,4 +34,22 @@ pub struct NewCan<'a> {
     pub user_id: i64,
     pub user: &'a str,
     pub date: NaiveDateTime,
+}
+
+#[derive(Queryable)]
+pub struct Suggestion {
+    pub suggestion_id: i32,
+    pub suggestion_text: String,
+    pub suggestion_date: NaiveDateTime,
+    pub suggestion_author_id: i64,
+    pub suggestion_message_id: i64,
+}
+
+#[derive(Insertable)]
+#[table_name = "suggestions"]
+pub struct NewSuggestion<'a> {
+    pub suggestion_text: &'a str,
+    pub suggestion_date: NaiveDateTime,
+    pub suggestion_author_id: i64,
+    pub suggestion_message_id: i64,
 }

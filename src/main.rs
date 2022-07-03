@@ -66,7 +66,6 @@ async fn on_event(
                 warn!("LOG_CHANNEL_ID not set! Moderation module disabled...");
                 return Ok(());
             }
-            // let _ = bot_modules::moderation::handle_message(ctx, framework, new_message).await;
         },
         _ => (),
     }
@@ -146,6 +145,8 @@ async fn main() {
                 bot_modules::misc::worldbuilding(),
                 bot_modules::colors::color(),
                 bot_modules::colors::clearcolor(),
+                bot_modules::suggestions::suggest(),
+                bot_modules::suggestions::suggest_message()
             ],
             prefix_options: PrefixFrameworkOptions {
                 prefix: Some("!".into()),
