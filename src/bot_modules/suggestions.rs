@@ -30,6 +30,12 @@ fn get_suggestion_by_message_id(conn: &SqliteConnection, message_id: i64) -> Opt
     suggestions.filter(suggestion_message_id.eq(message_id)).first(conn).ok()
 }
 
+fn delete_suggestion(conn: &SqliteConnection, suggestion: &Suggestion) {
+    use crate::schema::suggestions::dsl::*;
+
+    diesel::delete(suggestions.filter(suggestion_id.eq(suggestion.suggestion_id))).execute(conn).expect("Error deleting suggestion");
+}
+
 /// Suggest an idea for the Discord
 #[command(slash_command, prefix_command)]
 pub async fn suggest(
@@ -143,6 +149,7 @@ pub async fn handle_reaction_add(ctx: &serenity::Context, framework: FrameworkCo
         return Ok(());
     }
     add_reaction.message(ctx).await?.delete(ctx).await?;
+    delete_suggestion(&conn, &suggestion);
     
     Ok(())
 }
