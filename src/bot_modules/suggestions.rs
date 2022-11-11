@@ -1,5 +1,7 @@
 use diesel::prelude::*;
 use diesel::SqliteConnection;
+use poise::FrameworkContext;
+use crate::Data;
 use crate::{Context, Error};
 use poise::{command, serenity_prelude::{self as serenity, Mentionable}};
 use crate::models::{NewSuggestion, Suggestion};
@@ -20,6 +22,12 @@ fn create_suggestion(conn: &SqliteConnection, suggestion: &str, author: &serenit
         .expect("Error creating suggestion");
 
     suggestions.order(suggestion_id.desc()).first(conn).unwrap()
+}
+
+fn get_suggestion_by_message_id(conn: &SqliteConnection, message_id: i64) -> Option<Suggestion> {
+    use crate::schema::suggestions::dsl::*;
+
+    suggestions.filter(suggestion_message_id.eq(message_id)).first(conn).ok()
 }
 
 /// Suggest an idea for the Discord
@@ -115,5 +123,26 @@ pub async fn suggest_message(
         .content(format!("Successfully created suggestion!\n\n{}", message_link))
     ).await?;
 
+    Ok(())
+}
+
+pub async fn handle_reaction_add(ctx: &serenity::Context, framework: FrameworkContext<'_, Data, Error>, add_reaction: &serenity::Reaction) -> Result<(), Error> {
+    if add_reaction.emoji != serenity::ReactionType::Unicode("❌".to_string()) {
+        return Ok(());
+    }
+    
+    let reaction_user = add_reaction.user(ctx).await?;
+    let data = framework.user_data().await;
+    let conn = data.pool.get().expect("Couldn't get connection from pool");
+    let suggestion = get_suggestion_by_message_id(&conn, add_reaction.message_id.0 as i64);
+    let Some(suggestion) = suggestion else {
+        return Ok(());
+    };
+
+    if suggestion.suggestion_author_id != reaction_user.id.0 as i64 {
+        return Ok(());
+    }
+    add_reaction.message(ctx).await?.delete(ctx).await?;
+    
     Ok(())
 }

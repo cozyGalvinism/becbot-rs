@@ -149,7 +149,7 @@ pub async fn catenativedoomsdaydicecascader(ctx: Context<'_>) -> Result<(), Erro
                 )
             )
         )
-    ).await?.unwrap();
+    ).await?;
 
     // the way the Catenative Doomsday Dice Cascader works is:
     // 1. Roll a d6 to determine the amount of dice to roll.
@@ -162,8 +162,7 @@ pub async fn catenativedoomsdaydicecascader(ctx: Context<'_>) -> Result<(), Erro
         .collect_limit(1)
         .await;
     if mci.is_none() {
-        let mut msg = reply.message().await?;
-        msg.edit(ctx.discord(), |m| {
+        reply.edit(ctx, |m| {
             m.embed(|e| {
                 e.title("CATENATIVE DOOMSDAY DICE CASCADER").description(
                     "You failed to press the **PRIME BUBBLE**, the device staying turned off.",

@@ -2,7 +2,7 @@ use poise::serenity_prelude::{self as serenity, Mentionable};
 
 use crate::{Data, Error};
 
-pub async fn handle_message(ctx: &serenity::Context, _: &poise::Framework<Data, Error>, message: &serenity::Message) -> serenity::Result<()> {
+pub async fn handle_message(ctx: &serenity::Context, _: &poise::FrameworkContext<'_, Data, Error>, message: &serenity::Message) -> serenity::Result<()> {
     if message.author.bot {
         return Ok(());
     }

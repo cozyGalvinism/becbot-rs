@@ -23,7 +23,7 @@ type Data = UserData;
 type Error = Box<dyn std::error::Error + Send + Sync>;
 type Context<'a> = poise::Context<'a, UserData, Error>;
 
-async fn register_all_commands(guild_id: u64, ctx: &serenity::Context, framework: &poise::Framework<Data, Error>) -> Result<usize, serenity::Error> {
+async fn register_all_commands(guild_id: u64, ctx: &serenity::Context, framework: &poise::FrameworkContext<'_, Data, Error>) -> Result<usize, serenity::Error> {
     let mut commands_builder = serenity::CreateApplicationCommands::default();
     let commands = &framework.options().commands;
     for command in commands {
@@ -42,7 +42,7 @@ async fn register_all_commands(guild_id: u64, ctx: &serenity::Context, framework
 async fn on_event(
     ctx: &serenity::Context,
     event: &poise::Event<'_>,
-    framework: &poise::Framework<Data, Error>,
+    framework: poise::FrameworkContext<'_, Data, Error>,
     _user_data: &Data,
 ) -> Result<(), Error> {
     match event {
@@ -52,20 +52,23 @@ async fn on_event(
         poise::Event::CacheReady { guilds} => {
             info!("Cache ready, registering commands...");
             for g in guilds {
-                let registered_amount = register_all_commands(g.0, ctx, framework).await?;
+                let registered_amount = register_all_commands(g.0, ctx, &framework).await?;
                 info!("Registered {} commands for guild {}", registered_amount, g.0);
             }
             info!("Commands registered! Have fun!");
             ctx.set_activity(serenity::Activity::playing(format!("Becbot Reloaded v{}", env!("CARGO_PKG_VERSION")))).await;
         },
         poise::Event::Message {new_message} => {
-            let _ = bot_modules::autoresponder::handle_message(ctx, framework, new_message).await;
+            let _ = bot_modules::autoresponder::handle_message(ctx, &framework, new_message).await;
             
             let log_channel_id = std::env::var("LOG_CHANNEL_ID");
             if log_channel_id.is_err() {
                 warn!("LOG_CHANNEL_ID not set! Moderation module disabled...");
                 return Ok(());
             }
+        },
+        poise::Event::ReactionAdd { add_reaction } => {
+            bot_modules::suggestions::handle_reaction_add(ctx, framework, add_reaction).await?;
         },
         _ => (),
     }
@@ -89,7 +92,7 @@ async fn main() {
     let database_url =
         env::var("DATABASE_URL").expect("Expected a database url in the environment");
 
-    let framework = poise::Framework::build()
+    let framework = poise::Framework::builder()
         .token(token)
         .user_data_setup(
             move |_ctx, _ready, _framework: &poise::Framework<UserData, Error>| {
@@ -155,8 +158,10 @@ async fn main() {
             ..Default::default()
         })
         .build().await.unwrap();
-    let shard_manager = framework.shard_manager();
+    
+    let frm = framework.clone();
     tokio::spawn(async move {
+        let shard_manager = frm.shard_manager();
         tokio::signal::ctrl_c().await.expect("Failed to install CTRL+C handler");
         println!("CTRL+C received, shutting down...");
         shard_manager.lock().await.shutdown_all().await;
