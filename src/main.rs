@@ -13,7 +13,7 @@ use std::env;
 
 use diesel::{r2d2::ConnectionManager, SqliteConnection, connection::SimpleConnection};
 use dotenv::dotenv;
-use poise::{serenity_prelude as serenity, PrefixFrameworkOptions};
+use poise::{serenity_prelude::{self as serenity, GatewayIntents}, PrefixFrameworkOptions};
 
 pub struct UserData {
     pub pool: r2d2::Pool<ConnectionManager<SqliteConnection>>,
@@ -93,6 +93,7 @@ async fn main() {
         env::var("DATABASE_URL").expect("Expected a database url in the environment");
 
     let framework = poise::Framework::builder()
+        .intents(serenity::GatewayIntents::non_privileged() | serenity::GatewayIntents::MESSAGE_CONTENT)
         .token(token)
         .user_data_setup(
             move |_ctx, _ready, _framework: &poise::Framework<UserData, Error>| {
