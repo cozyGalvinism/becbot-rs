@@ -126,7 +126,6 @@ async fn main() {
                 bot_modules::quotes::add_quote(),
                 bot_modules::quotes::remove_quote(),
                 bot_modules::quotes::quote(),
-                bot_modules::cans::addcan(),
                 bot_modules::misc::catenativedoomsdaydicecascader(),
                 bot_modules::misc::teebztime(),
                 bot_modules::misc::lumitime(),
