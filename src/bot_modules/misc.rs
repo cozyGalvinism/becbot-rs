@@ -406,6 +406,32 @@ pub async fn copper(ctx: Context<'_>) -> Result<(), Error> {
     Ok(())
 }
 
+/// Convert a temperature from Celsius to Fahrenheit
+#[command(slash_command, prefix_command)]
+pub async fn temperaturec(
+    ctx: Context<'_>,
+    #[description = "Temperature in Celsius"] degrees: f64,
+) -> Result<(), Error> {
+    let fahrenheit = degrees * 9.0 / 5.0 + 32.0;
+    ctx.say(format!("{:.2}°C is {:.2}°F", degrees, fahrenheit))
+        .await?;
+
+    Ok(())
+}
+
+/// Convert a temperature from Fahrenheit to Celsius
+#[command(slash_command, prefix_command)]
+pub async fn temperaturef(
+    ctx: Context<'_>,
+    #[description = "Temperature in Fahrenheit"] degrees: f64,
+) -> Result<(), Error> {
+    let celsius = (degrees - 32.0) * 5.0 / 9.0;
+    ctx.say(format!("{:.2}°F is {:.2}°C", degrees, celsius))
+        .await?;
+
+    Ok(())
+}
+
 /// The wonderful act of... WORLDBUILDING
 #[command(slash_command, prefix_command)]
 pub async fn worldbuilding(ctx: Context<'_>) -> Result<(), Error> {
