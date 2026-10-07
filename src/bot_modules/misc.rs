@@ -276,7 +276,7 @@ pub async fn catenativedoomsdaydicecascader(ctx: Context<'_>) -> Result<(), Erro
         })
     }).await?;
     if result == 1.into() {
-        ctx.say("https://www.homestuck.com/images/extras/ps000020_9.gif").await?;
+        ctx.say("https://storage.homestuck.com/secrets/old-secrets/images/ps000020_9.gif").await?;
     }
 
     Ok(())
